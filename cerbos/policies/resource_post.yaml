@@ -1,0 +1,52 @@
+# The resource policy file allows you to create 
+# rules for parent/derived roles on different 
+# actions that can be performed on a resource. 
+
+# These rules inform the roles if they have 
+# permission to perform certain actions on a resource.
+
+---
+apiVersion: api.cerbos.dev/v1 # the version for the resource policy file
+resourcePolicy: # holds all the key attributes of the resource policy
+  version: "default" # used to identify the policy that should be used in the application; you can have multiple policy versions for the same resource.
+  importDerivedRoles: # used to specify the type of derived roles you want to import into the resource policy file
+    - common_roles
+  resource: "blogpost" # contains the resource you want to apply the roles and permissions to
+  rules: # set the rules for different operations, on the basis of user permissions
+    - actions: ['view:all'] # operations to be performed
+      effect: EFFECT_ALLOW # indicate whether to grant the user access to the operation, based on the roles and derived roles (and conditions, if they exist)
+      derivedRoles: # contains the derived roles you formed in your derived_roles.yaml file
+        - all_users
+
+    - actions: ['view:single']
+      effect: EFFECT_ALLOW
+      roles: # static default roles used by your application
+        - moderator
+        - member
+
+    - actions: ['create']
+      effect: EFFECT_ALLOW
+      derivedRoles:
+        - member_only
+
+    - actions: ['update']
+      effect: EFFECT_ALLOW
+      derivedRoles:
+        - owner
+        - moderator_only
+      condition: # specifies conditions that must be met before access can be granted to the operation
+        match:
+          any:
+            of:
+              - expr: request.resource.attr.flagged == false && request.principal.attr.role == "member"
+              - expr: request.resource.attr.flagged == true && request.principal.attr.role == "moderator"
+
+    - actions: ['delete']
+      effect: EFFECT_ALLOW
+      derivedRoles:
+        - owner
+
+    - actions: ['flag']
+      effect: EFFECT_ALLOW
+      derivedRoles:
+        - moderator_only

@@ -1,0 +1,45 @@
+# Derived roles allow you to create dynamic roles 
+# from one or more parent roles. 
+
+# For example, the role member is permitted to view 
+# all blog posts created by other members, but is 
+# not allowed to perform any edit operation. 
+
+# To allow owners of a blog post who are also members 
+# to make edits on their blog post, a derived role 
+# called owner is created to grant this permission.
+
+---
+apiVersion: "api.cerbos.dev/v1" # the current version of the Cerbos derived role
+derivedRoles: # contains the list of user roles that your application will be used for
+  name: common_roles # allows you to distinguish between multiple derived roles files in your application that can be used in your resource policies
+  definitions: # defines all the intended roles to be used in the application
+    - name: all_users
+      parentRoles: ["member", "moderator"] # the roles to which the derived roles apply
+      condition: # a set of expressions that must hold true for the derived roles to take effect - check the condition guide
+        match:
+          expr: request.principal.attr.blocked == false
+
+    - name: owner
+      parentRoles: ["member"]
+      condition:
+        match:
+          all:
+            of:
+              - expr: request.resource.attr.userId == request.principal.attr.id
+              - expr: request.principal.attr.blocked == false
+      
+    - name: member_only
+      parentRoles: ["member"]
+      condition:
+        match:
+          expr: request.principal.attr.blocked == false
+    
+    - name: moderator_only
+      parentRoles: ["moderator"]
+      condition:
+        match:
+          expr: request.principal.attr.blocked == false
+
+    - name: unknown
+      parentRoles: ["unknown"]
