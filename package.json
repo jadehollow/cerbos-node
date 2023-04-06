@@ -8,7 +8,9 @@
     "tsc": "tsc",
     "postinstall": "npm run tsc",
     "dev": "ts-node-dev — respawn — pretty — transpile-only index.ts",
-    "test": "mocha --exit --recursive test/**/*.js"
+    "test": "mocha --exit --recursive test/**/*.js",
+    "cerbos:start": "docker run --rm --name cerbos -v $(pwd)/cerbos/policies:/policies -p 3592:3592 -p 3593:3593 ghcr.io/cerbos/cerbos:latest",
+    "run:cerbos": "npm run cerbos:start && npm run start"
   },
   "keywords": [],
   "author": "",

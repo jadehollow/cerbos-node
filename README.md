@@ -1,8 +1,17 @@
 # Cerbos-Node
+
 A demo project using Cerbos with NodeJS.
 
-## Run the application
+## Requirements
 
-`npm run start`
+[NodeJS](https://nodejs.org/en/download)
 
-`docker run --rm --name cerbos -v $(pwd)/cerbos/policies:/policies -p 3592:3592 -p 3593:3593 ghcr.io/cerbos/cerbos:latest`
+[Docker](https://www.docker.com/products/docker-desktop/)
+
+## Commands
+
+To start the app: `npm run start`
+
+To start cerbos: `cerbos:start`
+
+To start the app & cerbos: `run:cerbos`
