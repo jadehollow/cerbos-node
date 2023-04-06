@@ -12,6 +12,6 @@ A demo project using Cerbos with NodeJS.
 
 To start the app: `npm run start`
 
-To start cerbos: `cerbos:start`
+To start cerbos: `npm run cerbos:start`
 
-To start the app & cerbos: `run:cerbos`
+To start the app & cerbos: `npm run start:cerbos`
